@@ -35,9 +35,13 @@ int main(void)
     };
 
     unsigned int buffer;
-    glGenBuffers(1, &buffer);
+    glGenBuffers(1, &buffer); // Generates a buffer in the GPU's VRAM 
     glBindBuffer(GL_ARRAY_BUFFER, buffer); // A Buffer need to be binded to be drawn, because OpenGL is a state machine
     glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+
+    // Describes to OpenGL what the layout of the buffer is
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
