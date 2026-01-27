@@ -2,15 +2,18 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+//----------------------------------
+//Purpose: To return a shader object
+//----------------------------------
 static unsigned int CompileShader(unsigned int type, const std::string& source)
 {
-    unsigned int id = glCreateShader(type);
-    const char* src = source.c_str();
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
+    unsigned int id = glCreateShader(type); //Creates a shader object with the given type
+    const char* src = source.c_str(); //Gets shader source code 
+    glShaderSource(id, 1, &src, nullptr); //Replaces shader's source code 
+    glCompileShader(id); //Compiles shader code to assembly
 
     int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result); //Gets the compile status parameter from the given shader... so we can check if it failed to compile
     if (result == GL_FALSE)
     {
         int length;
@@ -23,20 +26,27 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
         return 0;
     }
 
-    return id;
+    return id; //Returns the id of the shader, rather than the object of it
 }
 
+//----------------------------------
+//Purpose: 
+//----------------------------------
 static int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
-    unsigned int program = glCreateProgram();
+    unsigned int program = glCreateProgram(); //Creates program object, where shader objects attach themselves to
     unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
     unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
-    glLinkProgram(program);
-    glValidateProgram(program);
 
-    glDeleteShader(vs);
+    //Attaches shader objects to the program
+    glAttachShader(program, vs); 
+    glAttachShader(program, fs);
+
+    glLinkProgram(program); //Links the program, AKA links the attached shaders
+    glValidateProgram(program); //Validates whether the program can run, returns a string of information or empty text
+
+    //Frees memory and undoes the effects of glCreateShader
+    glDeleteShader(vs); 
     glDeleteShader(fs);
 
     return program;
